@@ -1,0 +1,9 @@
+passwords.ini
+
+state.sqlite
+twistd.pid
+
+http.log
+twistd.log
+
+test-*

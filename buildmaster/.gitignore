@@ -7,4 +7,4 @@ twistd.pid
 http.log
 twistd.log
 
-test-*
+testsuite-*

@@ -1,0 +1,46 @@
+commit 99c572df136fe0df18cdc7a853d0a208309aa953
+Author: Benjamin Gilbert <bgilbert@backtick.net>
+Date:   Sun Sep 7 19:24:18 2014 -0400
+
+    Check HMAC signature in GitHub change hook
+
+diff --git a/master/buildbot/status/web/hooks/github.py b/master/buildbot/status/web/hooks/github.py
+index 03f3c7d..ac0d7ce 100644
+--- a/master/buildbot/status/web/hooks/github.py
++++ b/master/buildbot/status/web/hooks/github.py
+@@ -16,6 +16,8 @@
+ import re
+ 
+ from dateutil.parser import parse as dateparse
++import hashlib
++import hmac
+ from twisted.python import log
+ 
+ try:
+@@ -25,6 +27,10 @@ except ImportError:
+     import simplejson as json
+ 
+ 
++class GitHubAuthFailed(Exception):
++    pass
++
++
+ def getChanges(request, options=None):
+     """
+     Responds only to POST events and starts the build process
+@@ -33,6 +39,15 @@ def getChanges(request, options=None):
+         request
+             the http request object
+     """
++    if isinstance(options, dict) and 'secret' in options:
++        signature = request.getHeader('X-Hub-Signature')
++        body = request.content.read()
++        body_hmac = hmac.new(options['secret'], body, hashlib.sha1)
++        if 'sha1=' + body_hmac.hexdigest() != signature:
++            raise GitHubAuthFailed()
++    else:
++        log.msg("Missing secret in the GitHub WebHook options: "
++                "cannot authenticate the request!")
+     payload = json.loads(request.args['payload'][0])
+     user = payload['repository']['owner']['name']
+     repo = payload['repository']['name']

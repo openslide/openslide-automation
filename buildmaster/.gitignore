@@ -1,4 +1,5 @@
 passwords.ini
+changehook.password
 
 state.sqlite
 twistd.pid

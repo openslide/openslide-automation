@@ -17,9 +17,11 @@
 import boto
 from boto.exception import S3ResponseError
 from cStringIO import StringIO
+from datetime import datetime, timedelta
 import errno
 import os
 import random
+import re
 import requests
 import socket
 import subprocess
@@ -35,6 +37,12 @@ UNCACHEABLE_TYPES = set([
     'text/javascript',
     'application/javascript',
 ])
+
+# GC settings
+GC_PROBABILITY = 0.05
+UPLOAD_GRACE_TIME = timedelta(days=1)
+OBJECT_MIN_LIFETIME = timedelta(days=90)
+IMMORTAL_OBJECT_RE = re.compile('/openslide-testdata/')
 
 
 class RequestHandler(WSGIRequestHandler):
@@ -119,6 +127,32 @@ def proxy_app(environ, start_response):
         return key_to_user(key)
 
 
+def to_age(stamp):
+    stamp = datetime.strptime(stamp, '%Y-%m-%dT%H:%M:%S.000Z')
+    return datetime.utcnow() - stamp
+
+
+def cleanup():
+    print 'proxy: Performing cleanup'
+    bucket = boto.connect_s3().get_bucket(BUCKET_NAME, validate=False)
+
+    # Delete stale multipart uploads
+    for upload in bucket.list_multipart_uploads():
+        if to_age(upload.initiated) > UPLOAD_GRACE_TIME:
+            upload.cancel_upload()
+
+    # Delete all mortal objects older than min lifetime
+    delete = []
+    for key in bucket.list():
+        if IMMORTAL_OBJECT_RE.search(key.name):
+            continue
+        if to_age(key.last_modified) > OBJECT_MIN_LIFETIME:
+            print 'proxy: Deleting %s' % key.name
+            delete.append(key)
+    if delete:
+        bucket.delete_keys(delete)
+
+
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         print 'Usage: %s <command> [args]'
@@ -147,5 +181,8 @@ if __name__ == '__main__':
     env['HTTP_PROXY'] = url
     # HTTPS, FTP not supported
     ret = subprocess.call(sys.argv[1:], env=env, close_fds=True)
+
+    if random.random() < GC_PROBABILITY:
+        cleanup()
 
     sys.exit(ret)

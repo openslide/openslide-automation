@@ -1,0 +1,30 @@
+commit b8d788e9ff674c3ee5caa9c27e520a4ba4b09c29
+Author: Benjamin Gilbert <bgilbert@backtick.net>
+Date:   Sun Sep 14 17:38:27 2014 -0400
+
+    Remember to apply tags to EC2 spot instances
+    
+    http://trac.buildbot.net/ticket/2903
+
+diff --git a/master/buildbot/buildslave/ec2.py b/master/buildbot/buildslave/ec2.py
+index b9c28e8..1a6a659 100644
+--- a/master/buildbot/buildslave/ec2.py
++++ b/master/buildbot/buildslave/ec2.py
+@@ -274,8 +274,6 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+         instance_id, image_id, start_time = self._wait_for_instance(
+             reservation)
+         if None not in [instance_id, image_id, start_time]:
+-            if len(self.tags) > 0:
+-                self.conn.create_tags(instance_id, self.tags)
+             return [instance_id, image_id, start_time]
+         else:
+             log.msg('%s %s failed to start instance %s (%s)' %
+@@ -393,6 +391,8 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+                 minutes // 60, minutes % 60, seconds)
+             if len(self.volumes) > 0:
+                 self._attach_volumes()
++            if len(self.tags) > 0:
++                self.conn.create_tags(self.instance.id, self.tags)
+             return self.instance.id, image.id, start_time
+         else:
+             return None, None, None

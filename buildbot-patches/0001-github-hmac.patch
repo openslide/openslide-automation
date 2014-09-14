@@ -1,8 +1,10 @@
-commit 99c572df136fe0df18cdc7a853d0a208309aa953
+commit b2d7f16b3509c05f51afd94724c97b3a67a3741f
 Author: Benjamin Gilbert <bgilbert@backtick.net>
 Date:   Sun Sep 7 19:24:18 2014 -0400
 
     Check HMAC signature in GitHub change hook
+    
+    http://trac.buildbot.net/ticket/2889
 
 diff --git a/master/buildbot/status/web/hooks/github.py b/master/buildbot/status/web/hooks/github.py
 index 03f3c7d..ac0d7ce 100644

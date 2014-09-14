@@ -38,13 +38,16 @@ def create_image(name):
         raise ConfigError('found %d instances' % len(instances))
     instance = instances[0]
 
-    # Resize root filesystem; use gp2 volume
+    # Configure block device
     if len(instance.block_device_mapping) != 1:
         raise ConfigError('found multiple block devices')
     device_node = instance.block_device_mapping.keys()[0]
     mapping = BlockDeviceMapping()
-    mapping[device_node] = BlockDeviceType(volume_type='gp2',
-            size=VOLUME_SIZE)
+    mapping[device_node] = BlockDeviceType(
+        volume_type='gp2',
+        size=VOLUME_SIZE,
+        delete_on_termination=True,
+    )
 
     # Create image
     timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')

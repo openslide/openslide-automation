@@ -31,7 +31,8 @@ class ConfigError(Exception):
 def create_image(name):
     # Find instance
     reservations = conn.get_all_instances(filters={'tag:Name': name})
-    instances = [i for r in reservations for i in r.instances]
+    instances = [i for r in reservations for i in r.instances
+            if i.state != 'terminated']
     if not instances:
         raise ConfigError('not found')
     elif len(instances) > 1:

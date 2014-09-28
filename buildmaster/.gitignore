@@ -1,4 +1,4 @@
-passwords.ini
+local.ini
 changehook.password
 
 state.sqlite

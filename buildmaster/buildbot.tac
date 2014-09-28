@@ -10,7 +10,7 @@ maxRotatedFiles = 10
 configfile = 'master.cfg'
 
 # Default umask for server
-umask = None
+umask = 022
 
 # if this is a relocatable tac file, get the directory containing the TAC
 if basedir == '.':

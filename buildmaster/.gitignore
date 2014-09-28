@@ -2,6 +2,8 @@ passwords.ini
 changehook.password
 
 state.sqlite
+state.sqlite-shm
+state.sqlite-wal
 twistd.pid
 
 http.log

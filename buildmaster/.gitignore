@@ -10,3 +10,5 @@ http.log
 twistd.log
 
 testsuite-*
+
+public_html/results/

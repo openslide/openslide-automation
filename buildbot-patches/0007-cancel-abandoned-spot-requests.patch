@@ -1,0 +1,26 @@
+commit 043982786c7e3dfc82148064bcabc803c6d69dca
+Author: Benjamin Gilbert <bgilbert@backtick.net>
+Date:   Thu Oct 9 02:58:48 2014 -0400
+
+    Don't leak EC2 spot request when it's not immediately fulfilled
+    
+    http://trac.buildbot.net/ticket/2935
+
+diff --git a/master/buildbot/buildslave/ec2.py b/master/buildbot/buildslave/ec2.py
+index acc6f16..dd6afb9 100644
+--- a/master/buildbot/buildslave/ec2.py
++++ b/master/buildbot/buildslave/ec2.py
+@@ -431,11 +431,13 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+                      request.id, minutes, seconds))
+             return request
+         elif request_status == PRICE_TOO_LOW:
++            request.cancel()
+             log.msg('%s %s spot request rejected, spot price too low' %
+                     (self.__class__.__name__, self.slavename))
+             raise interfaces.LatentBuildSlaveFailedToSubstantiate(
+                 request.id, request.status)
+         else:
++            request.cancel()
+             log.msg('%s %s failed to fulfill spot request %s with status %s' %
+                     (self.__class__.__name__, self.slavename,
+                      request.id, request_status))

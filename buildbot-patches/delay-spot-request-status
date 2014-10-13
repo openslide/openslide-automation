@@ -1,0 +1,15 @@
+Wait one interval before querying spot request status, to reduce the chance
+that EC2 returns InvalidSpotInstanceRequestID.NotFound.
+
+http://trac.buildbot.net/ticket/2902
+
+--- buildbot-0.8.9.orig/buildbot/buildslave/ec2.py
++++ buildbot-0.8.9/buildbot/buildslave/ec2.py
+@@ -402,6 +402,7 @@
+                 (self.__class__.__name__, self.slavename))
+         duration = 0
+         interval = self._poll_resolution
++        time.sleep(interval)
+         requests = self.conn.get_all_spot_instance_requests(
+             request_ids=[reservation.id])
+         request = requests[0]

@@ -1,14 +1,8 @@
-commit 3897d044f5ddf0078e9225bd0aa9622aec1f3e7a
-Author: Benjamin Gilbert <bgilbert@backtick.net>
-Date:   Wed Sep 17 22:44:42 2014 -0400
+Allow configuring an EC2 instance with an instance profile
 
-    Allow configuring an EC2 instance with an instance profile
-
-diff --git a/master/buildbot/buildslave/ec2.py b/master/buildbot/buildslave/ec2.py
-index 1a6a659..acc6f16 100644
---- a/master/buildbot/buildslave/ec2.py
-+++ b/master/buildbot/buildslave/ec2.py
-@@ -59,7 +59,8 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+--- buildbot-0.8.9.orig/buildbot/buildslave/ec2.py
++++ buildbot-0.8.9/buildbot/buildslave/ec2.py
+@@ -59,7 +59,8 @@
                   max_builds=None, notify_on_missing=[], missing_timeout=60 * 20,
                   build_wait_timeout=60 * 10, properties={}, locks=None,
                   spot_instance=False, max_spot_price=1.6, volumes=[],
@@ -18,7 +12,7 @@ index 1a6a659..acc6f16 100644
  
          AbstractLatentBuildSlave.__init__(
              self, name, password, max_builds, notify_on_missing,
-@@ -202,6 +203,7 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+@@ -202,6 +203,7 @@
              elastic_ip = self.conn.get_all_addresses([elastic_ip])[0]
          self.elastic_ip = elastic_ip
          self.tags = tags
@@ -26,7 +20,7 @@ index 1a6a659..acc6f16 100644
  
      def get_image(self):
          if self.image is not None:
-@@ -269,7 +271,8 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+@@ -269,7 +271,8 @@
          reservation = image.run(
              key_name=self.keypair_name, security_groups=[self.security_name],
              instance_type=self.instance_type, user_data=self.user_data,
@@ -36,7 +30,7 @@ index 1a6a659..acc6f16 100644
          self.instance = reservation.instances[0]
          instance_id, image_id, start_time = self._wait_for_instance(
              reservation)
-@@ -356,7 +359,8 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+@@ -356,7 +359,8 @@
                  self.security_name],
              instance_type=self.instance_type,
              user_data=self.user_data,

@@ -1,16 +1,10 @@
-commit 033b816f5993bb0150948cd0b2eec5031d2fbc85
-Author: Benjamin Gilbert <bgilbert@backtick.net>
-Date:   Sun Sep 14 16:19:01 2014 -0400
+Fix AMI filters with spot instances
 
-    Fix AMI filters with spot instances
-    
-    http://trac.buildbot.net/ticket/2900
+http://trac.buildbot.net/ticket/2900
 
-diff --git a/master/buildbot/buildslave/ec2.py b/master/buildbot/buildslave/ec2.py
-index a204db8..27600f7 100644
---- a/master/buildbot/buildslave/ec2.py
-+++ b/master/buildbot/buildslave/ec2.py
-@@ -351,8 +351,9 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+--- buildbot-0.8.9.orig/buildbot/buildslave/ec2.py
++++ buildbot-0.8.9/buildbot/buildslave/ec2.py
+@@ -351,8 +351,9 @@
          target_price = min(target_price, self.max_spot_price)
          log.msg('%s %s requesting spot instance with price %0.2f.' %
                  (self.__class__.__name__, self.slavename, target_price))
@@ -21,7 +15,7 @@ index a204db8..27600f7 100644
              security_groups=[
                  self.security_name],
              instance_type=self.instance_type,
-@@ -362,7 +363,7 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+@@ -362,7 +363,7 @@
          instance_id = request.instance_id
          reservations = self.conn.get_all_instances(instance_ids=[instance_id])
          self.instance = reservations[0].instances[0]

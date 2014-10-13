@@ -1,15 +1,9 @@
-commit b2d7f16b3509c05f51afd94724c97b3a67a3741f
-Author: Benjamin Gilbert <bgilbert@backtick.net>
-Date:   Sun Sep 7 19:24:18 2014 -0400
+Check HMAC signature in GitHub change hook
 
-    Check HMAC signature in GitHub change hook
-    
-    http://trac.buildbot.net/ticket/2889
+http://trac.buildbot.net/ticket/2889
 
-diff --git a/master/buildbot/status/web/hooks/github.py b/master/buildbot/status/web/hooks/github.py
-index 03f3c7d..ac0d7ce 100644
---- a/master/buildbot/status/web/hooks/github.py
-+++ b/master/buildbot/status/web/hooks/github.py
+--- buildbot-0.8.9.orig/buildbot/status/web/hooks/github.py
++++ buildbot-0.8.9/buildbot/status/web/hooks/github.py
 @@ -16,6 +16,8 @@
  import re
  
@@ -19,7 +13,7 @@ index 03f3c7d..ac0d7ce 100644
  from twisted.python import log
  
  try:
-@@ -25,6 +27,10 @@ except ImportError:
+@@ -25,6 +27,10 @@
      import simplejson as json
  
  
@@ -30,7 +24,7 @@ index 03f3c7d..ac0d7ce 100644
  def getChanges(request, options=None):
      """
      Responds only to POST events and starts the build process
-@@ -33,6 +39,15 @@ def getChanges(request, options=None):
+@@ -33,6 +39,15 @@
          request
              the http request object
      """

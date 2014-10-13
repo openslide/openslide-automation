@@ -1,0 +1,7 @@
+github-hmac
+max-spot-price
+ami-filters
+delay-spot-request-status
+tag-spot-instances
+instance-profile
+cancel-abandoned-spot-requests

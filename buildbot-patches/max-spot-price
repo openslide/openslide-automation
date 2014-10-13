@@ -1,16 +1,10 @@
-commit 0769b2ce29beb99fcaf174aed69968c7b9fac1f1
-Author: Benjamin Gilbert <bgilbert@backtick.net>
-Date:   Sun Sep 14 15:48:17 2014 -0400
+If EC2 max_spot_price is exceeded, limit bid rather than bailing
 
-    If EC2 max_spot_price is exceeded, limit bid rather than bailing
-    
-    http://trac.buildbot.net/ticket/2898
+http://trac.buildbot.net/ticket/2898
 
-diff --git a/master/buildbot/buildslave/ec2.py b/master/buildbot/buildslave/ec2.py
-index 64abf29..a204db8 100644
---- a/master/buildbot/buildslave/ec2.py
-+++ b/master/buildbot/buildslave/ec2.py
-@@ -348,15 +348,9 @@ class EC2LatentBuildSlave(AbstractLatentBuildSlave):
+--- buildbot-0.8.9.orig/buildbot/buildslave/ec2.py
++++ buildbot-0.8.9/buildbot/buildslave/ec2.py
+@@ -348,15 +348,9 @@
              target_price = 0.02
          else:
              target_price = (price_sum / price_count) * self.price_multiplier

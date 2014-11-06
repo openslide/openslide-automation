@@ -10,5 +10,7 @@ http.log
 twistd.log
 
 testsuite-*
+winbuild
 
 public_html/results/
+public_html/snapshots/

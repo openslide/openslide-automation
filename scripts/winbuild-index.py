@@ -59,7 +59,7 @@ template = Template('''<!doctype html>
       {{ cur[:8] }}
     </a>
   {% else %}
-    {{ cur }}
+    {{ cur[:8] }}
   {% endif %}
 {% endmacro %}
 

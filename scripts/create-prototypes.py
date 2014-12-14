@@ -22,7 +22,10 @@ import sys
 import time
 
 IMAGE_TYPE = 'openslide-buildslave'
-INSTANCE_TYPE = 'm3.medium'
+INSTANCE_TYPES = {
+    'i386': 'm1.medium',
+    'x86_64': 'm3.medium',
+}
 SECURITY_GROUP = 'openslide-buildslave'
 INSTANCE_PROFILE = 'openslide-buildslave'
 
@@ -75,7 +78,8 @@ def create_instance(name):
         temp_image.update()
 
     # Create instance
-    reservation = temp_image.run(instance_type=INSTANCE_TYPE,
+    reservation = temp_image.run(
+            instance_type=INSTANCE_TYPES[image.architecture],
             security_groups=[SECURITY_GROUP],
             instance_profile_name=INSTANCE_PROFILE)
     instance = reservation.instances[0]

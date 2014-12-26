@@ -23,7 +23,8 @@ import time
 
 IMAGE_TYPE = 'openslide-buildslave'
 INSTANCE_TYPES = {
-    'i386': 'm1.medium',
+    # f21-ia32 fails to boot on m1.medium due to kernel problems
+    'i386': 'm1.small',
     'x86_64': 'm3.medium',
 }
 SECURITY_GROUP = 'openslide-buildslave'

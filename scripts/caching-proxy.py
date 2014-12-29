@@ -89,7 +89,7 @@ def proxy_app(environ, start_response):
         key.open()
     except S3ResponseError:
         # Failed; start download
-        r = requests.get(url, stream=True)
+        r = requests.get(url, stream=True, timeout=60)
         r.raise_for_status()
         content_type = r.headers['Content-Type']
         content_length = r.headers['Content-Length']

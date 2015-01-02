@@ -1,5 +1,6 @@
 local.ini
 changehook.password
+users
 
 state.sqlite
 state.sqlite-shm

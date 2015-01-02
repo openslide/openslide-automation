@@ -11,7 +11,7 @@ http.log
 twistd.log
 
 testsuite-*
-winbuild
+winbuild-*
 wintest-*
 
 public_html/results/

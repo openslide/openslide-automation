@@ -42,9 +42,10 @@ def create_instance(name):
     })
     if not images:
         raise ConfigError('image not found')
-    elif len(images) > 1:
-        raise ConfigError('found %d images' % len(images))
-    image = images[0]
+    images.sort(key=lambda i: i.location)
+    image = images[-1]
+    if len(images) > 1:
+        print >>sys.stderr, '%s: selecting %s' % (name, image.name)
 
     # Configure block device
     if len(image.block_device_mapping) != 1:

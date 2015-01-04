@@ -36,6 +36,7 @@ connect = 9989
 4. Download a source tarball of Buildbot.
 5. Use quilt to apply the patches from the
    [buildbot-patches](buildbot-patches) directory:
+
     ```
 cd buildbot-0.8.xx
 ln -s .../openslide-automation/buildbot-patches patches
@@ -69,7 +70,7 @@ server {
 ```
 
 
-### `buildmaster/local.ini`
+### buildmaster/local.ini
 
 ```
 [email]
@@ -95,14 +96,14 @@ secret-key: <AWS-secret-access-key>
 ```
 
 
-### `buildmaster/changehook.password`
+### buildmaster/changehook.password
 
 ```
 buildbot:<GitHub-changehook-password>
 ```
 
 
-### `buildmaster/users`
+### buildmaster/users
 
 `htpasswd`-format file with username/password pairs for website login.
 

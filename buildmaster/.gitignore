@@ -7,8 +7,8 @@ state.sqlite-shm
 state.sqlite-wal
 twistd.pid
 
-http.log
-twistd.log
+http.log*
+twistd.log*
 
 testsuite-*
 winbuild-*

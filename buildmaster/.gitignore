@@ -10,6 +10,7 @@ twistd.pid
 http.log*
 twistd.log*
 
+retile
 testsuite-*
 winbuild-*
 wintest-*

@@ -39,6 +39,9 @@ UNCACHEABLE_TYPES = set([
     'application/javascript',
     'application/json',
 ])
+NO_PROXY = (
+    '.amazonaws.com',
+)
 
 # GC settings
 GC_PROBABILITY = 0.05
@@ -179,6 +182,11 @@ if __name__ == '__main__':
     thread.start()
 
     env = dict(os.environ)
+    no_proxy = os.environ.get('no_proxy') or []
+    if no_proxy:
+        no_proxy = no_proxy.split(',')
+    no_proxy.extend(NO_PROXY)
+    env['no_proxy'] = ','.join(no_proxy)
     env['http_proxy'] = url
     env['HTTP_PROXY'] = url
     # HTTPS, FTP not supported

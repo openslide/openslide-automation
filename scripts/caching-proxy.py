@@ -33,9 +33,11 @@ BUCKET_NAME = 'openslide-build-cache'
 BUFSIZE = 5 << 20
 UNCACHEABLE_TYPES = set([
     'text/html',
+    'text/plain',
     'text/css',
     'text/javascript',
     'application/javascript',
+    'application/json',
 ])
 
 # GC settings

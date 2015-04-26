@@ -93,7 +93,7 @@ def create_instance(name):
     # Delete temporary image
     temp_image.deregister()
 
-    return instance.id
+    return instance.id, instance.public_dns_name
 
 
 if __name__ == '__main__':
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     conn = boto.connect_ec2()
     for name in sys.argv[1:]:
         try:
-            instance_id = create_instance(name)
-            print '%s: %s' % (name, instance_id)
+            instance_id, hostname = create_instance(name)
+            print '%s: %s, %s' % (name, instance_id, hostname)
         except ConfigError, e:
             print >>sys.stderr, '%s: %s' % (name, e)

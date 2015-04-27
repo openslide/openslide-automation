@@ -124,7 +124,7 @@ The GitHub organization is configured with a webhook:
 | Field | Value |
 |-------|-------|
 | Payload URL | `https://buildbot:<GitHub-changehook-password>@buildbot.openslide.org/change_hook/github` |
-| Content Type | `application/x-www-form-urlencoded` |
+| Content Type | `application/json` |
 | Secret | `<webhook-HMAC-secret>` |
 | Events | Just the push event |
 

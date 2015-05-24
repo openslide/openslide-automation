@@ -28,7 +28,7 @@ class ConfigError(Exception):
     pass
 
 
-def create_image(name):
+def create_image(name, terminate=False):
     # Find instance
     reservations = conn.get_all_instances(filters={'tag:Name': name})
     instances = [i for r in reservations for i in r.instances
@@ -75,17 +75,28 @@ def create_image(name):
         snapshot = conn.get_all_snapshots([device.snapshot_id])[0]
         snapshot.add_tag('Name', name)
 
+    # Terminate instance, if requested
+    if terminate:
+        instance.terminate()
+
     return image_id
 
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        print >>sys.stderr, "Usage: %s instance-names" % sys.argv[0]
+        print >>sys.stderr, "Usage: %s [-t] instance-names" % sys.argv[0]
+        print >>sys.stderr, "    -t  Terminate instances afterward"
         sys.exit(1)
     conn = boto.connect_ec2()
-    for name in sys.argv[1:]:
+    instances = sys.argv[1:]
+    try:
+        instances.remove('-t')
+        terminate = True
+    except ValueError:
+        terminate = False
+    for name in instances:
         try:
-            image_id = create_image(name)
+            image_id = create_image(name, terminate)
             print '%s: %s' % (name, image_id)
         except ConfigError, e:
             print >>sys.stderr, '%s: %s' % (name, e)

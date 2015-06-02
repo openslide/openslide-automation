@@ -1,0 +1,217 @@
+version: 1.0.{build}
+init:
+- ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%
+environment:
+  WITH_COMPILER: cmd /E:ON /V:ON /C .\\run_with_compiler.cmd
+  matrix:
+  - PYTHON: C:\\Python27
+    PYTHON_VERSION: 2.7.8
+    PYTHON_ARCH: 32
+  - PYTHON: C:\\Python27-x64
+    PYTHON_VERSION: 2.7.8
+    PYTHON_ARCH: 64
+  - PYTHON: C:\\Python33
+    PYTHON_VERSION: 3.3.5
+    PYTHON_ARCH: 32
+  - PYTHON: C:\\Python33-x64
+    PYTHON_VERSION: 3.3.5
+    PYTHON_ARCH: 64
+  - PYTHON: C:\\Python34
+    PYTHON_VERSION: 3.4.1
+    PYTHON_ARCH: 32
+  - PYTHON: C:\\Python34-x64
+    PYTHON_VERSION: 3.4.1
+    PYTHON_ARCH: 64
+install:
+- ps: >-
+    # Sample script to install Python and pip under Windows
+
+    # Authors: Olivier Grisel and Kyle Kastner
+
+    # License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
+
+
+    $BASE_URL = "https://www.python.org/ftp/python/"
+
+    $GET_PIP_URL = "https://bootstrap.pypa.io/get-pip.py"
+
+    $GET_PIP_PATH = "C:\get-pip.py"
+
+
+
+    function DownloadPython ($python_version, $platform_suffix) {
+        $webclient = New-Object System.Net.WebClient
+        $filename = "python-" + $python_version + $platform_suffix + ".msi"
+        $url = $BASE_URL + $python_version + "/" + $filename
+
+        $basedir = $pwd.Path + "\"
+        $filepath = $basedir + $filename
+        if (Test-Path $filename) {
+            Write-Host "Reusing" $filepath
+            return $filepath
+        }
+
+        # Download and retry up to 5 times in case of network transient errors.
+        Write-Host "Downloading" $filename "from" $url
+        $retry_attempts = 3
+        for($i=0; $i -lt $retry_attempts; $i++){
+            try {
+                $webclient.DownloadFile($url, $filepath)
+                break
+            }
+            Catch [Exception]{
+                Start-Sleep 1
+            }
+       }
+       Write-Host "File saved at" $filepath
+       return $filepath
+    }
+
+
+
+    function InstallPython ($python_version, $architecture, $python_home) {
+        Write-Host "Installing Python" $python_version "for" $architecture "bit architecture to" $python_home
+        if (Test-Path $python_home) {
+            Write-Host $python_home "already exists, skipping."
+            return $false
+        }
+        if ($architecture -eq "32") {
+            $platform_suffix = ""
+        } else {
+            $platform_suffix = ".amd64"
+        }
+        $filepath = DownloadPython $python_version $platform_suffix
+        Write-Host "Installing" $filepath "to" $python_home
+        $args = "/qn /i $filepath TARGETDIR=$python_home"
+        Write-Host "msiexec.exe" $args
+        Start-Process -FilePath "msiexec.exe" -ArgumentList $args -Wait -Passthru
+        Write-Host "Python $python_version ($architecture) installation complete"
+        return $true
+    }
+
+
+
+    function InstallPip ($python_home) {
+        $pip_path = $python_home + "/Scripts/pip.exe"
+        $python_path = $python_home + "/python.exe"
+        if (-not(Test-Path $pip_path)) {
+            Write-Host "Installing pip..."
+            $webclient = New-Object System.Net.WebClient
+            $webclient.DownloadFile($GET_PIP_URL, $GET_PIP_PATH)
+            Write-Host "Executing:" $python_path $GET_PIP_PATH
+            Start-Process -FilePath "$python_path" -ArgumentList "$GET_PIP_PATH" -Wait -Passthru
+        } else {
+            Write-Host "pip already installed."
+        }
+    }
+
+
+    function InstallPackage ($python_home, $pkg) {
+        $pip_path = $python_home + "/Scripts/pip.exe"
+        & $pip_path install $pkg
+    }
+
+
+    function main () {
+        InstallPython $env:PYTHON_VERSION $env:PYTHON_ARCH $env:PYTHON
+        InstallPip $env:PYTHON
+        InstallPackage $env:PYTHON wheel
+    }
+
+
+    main
+
+
+    # Add wrapper script
+
+    @'
+
+    :: To build extensions for 64 bit Python 3, we need to configure environment
+
+    :: variables to use the MSVC 2010 C++ compilers from GRMSDKX_EN_DVD.iso of:
+
+    :: MS Windows SDK for Windows 7 and .NET Framework 4 (SDK v7.1)
+
+    ::
+
+    :: To build extensions for 64 bit Python 2, we need to configure environment
+
+    :: variables to use the MSVC 2008 C++ compilers from GRMSDKX_EN_DVD.iso of:
+
+    :: MS Windows SDK for Windows 7 and .NET Framework 3.5 (SDK v7.0)
+
+    ::
+
+    :: 32 bit builds do not require specific environment configurations.
+
+    ::
+
+    :: Note: this script needs to be run with the /E:ON and /V:ON flags for the
+
+    :: cmd interpreter, at least for (SDK v7.0)
+
+    ::
+
+    :: More details at:
+
+    :: https://github.com/cython/cython/wiki/64BitCythonExtensionsOnWindows
+
+    :: http://stackoverflow.com/a/13751649/163740
+
+    ::
+
+    :: Author: Olivier Grisel
+
+    :: License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
+
+    @ECHO OFF
+
+
+    SET COMMAND_TO_RUN=%*
+
+    SET WIN_SDK_ROOT=C:\Program Files\Microsoft SDKs\Windows
+
+
+    SET MAJOR_PYTHON_VERSION="%PYTHON_VERSION:~0,1%"
+
+    IF %MAJOR_PYTHON_VERSION% == "2" (
+        SET WINDOWS_SDK_VERSION="v7.0"
+    ) ELSE IF %MAJOR_PYTHON_VERSION% == "3" (
+        SET WINDOWS_SDK_VERSION="v7.1"
+    ) ELSE (
+        ECHO Unsupported Python version: "%MAJOR_PYTHON_VERSION%"
+        EXIT 1
+    )
+
+
+    IF "%PYTHON_ARCH%"=="64" (
+        ECHO Configuring Windows SDK %WINDOWS_SDK_VERSION% for Python %MAJOR_PYTHON_VERSION% on a 64 bit architecture
+        SET DISTUTILS_USE_SDK=1
+        SET MSSdk=1
+        "%WIN_SDK_ROOT%\%WINDOWS_SDK_VERSION%\Setup\WindowsSdkVer.exe" -q -version:%WINDOWS_SDK_VERSION%
+        "%WIN_SDK_ROOT%\%WINDOWS_SDK_VERSION%\Bin\SetEnv.cmd" /x64 /release
+        ECHO Executing: %COMMAND_TO_RUN%
+        call %COMMAND_TO_RUN% || EXIT 1
+    ) ELSE (
+        ECHO Using default MSVC build environment for 32 bit architecture
+        ECHO Executing: %COMMAND_TO_RUN%
+        call %COMMAND_TO_RUN% || EXIT 1
+    )
+
+    '@ | out-file -encoding ASCII run_with_compiler.cmd
+build_script:
+- REM SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
+- REM /E:ON and /V:ON options are not enabled in the batch script interpreter
+- 'REM See: http://stackoverflow.com/a/13751649/163740'
+- '%WITH_COMPILER% %PYTHON%\\python setup.py bdist_wheel'
+test: off
+artifacts:
+- path: dist\*
+deploy: off
+notifications:
+- provider: Email
+  to:
+  - bgilbert@backtick.net
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false

@@ -38,6 +38,13 @@ def create_image(name, terminate=False):
     elif len(instances) > 1:
         raise ConfigError('found %d instances' % len(instances))
     instance = instances[0]
+    if instance.state != 'stopped':
+        print >>sys.stderr, 'waiting for %s (%s) to stop...' % (
+                name, instance.id),
+        while instance.state != 'stopped':
+            time.sleep(10)
+            instance.update()
+        print >>sys.stderr, 'ok'
 
     # Configure block device
     if len(instance.block_device_mapping) != 1:

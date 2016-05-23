@@ -65,6 +65,8 @@ server {
         proxy_pass http://localhost:8010;
         # Ensure log streaming works correctly
         proxy_buffering off;
+        # Allow log streaming to pause for 20 minutes before giving up
+        proxy_read_timeout 1200s;
     }
 }
 ```

@@ -11,6 +11,7 @@ http.log*
 twistd.log*
 
 retile
+pytest-*
 testsuite-*
 winbuild-*
 wintest-*

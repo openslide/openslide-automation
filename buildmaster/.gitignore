@@ -14,6 +14,7 @@ retile
 pytest-*
 testsuite-*
 winbuild-*
+winpytest-*
 wintest-*
 
 public_html/results/

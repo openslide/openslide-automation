@@ -20,7 +20,7 @@ find "$1" \
         -type f -regex "${1%/}/.*/[0-9].*" -mtime +$RETENTION -exec rm {} \;
 
 # Delete old build results
-find "${1%/}/public_html/results" \
+find "${1%/}/public_html/results" -mindepth 1 \
         -mtime +$RETENTION -delete -o \
         -type d -empty -delete
 

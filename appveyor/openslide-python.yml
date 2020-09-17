@@ -20,17 +20,29 @@ environment:
 install:
 - ps: >-
     # We need wheel installed to build wheels
+
     & $env:PYTHON\python.exe -m pip install wheel
 
+
     # Add wrapper script
+
     @'
+
     @echo off
+
     :: To build extensions for 64 bit Python 3, we need to configure environment
+
     :: variables to use the MSVC 2010 C++ compilers from GRMSDKX_EN_DVD.iso of:
+
     :: MS Windows SDK for Windows 7 and .NET Framework 4
+
     ::
+
     :: More details at:
+
     :: https://github.com/cython/cython/wiki/64BitCythonExtensionsOnWindows
+
+
     IF "%DISTUTILS_USE_SDK%"=="1" (
         ECHO Configuring environment to build with MSVC on a 64bit architecture
         ECHO Using Windows SDK 7.1
@@ -42,7 +54,10 @@ install:
     ) ELSE (
         ECHO Using default MSVC build environment
     )
+
+
     CALL %*
+
     '@ | out-file -encoding ASCII build.cmd
 build_script:
 - cmd: build.cmd %PYTHON%\\python.exe setup.py bdist_wheel

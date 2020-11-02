@@ -23,6 +23,9 @@ for:
   - matrix:
       only:
         - PYTHON: C:\\Python39
+    image: Visual Studio 2019
+  - matrix:
+      only:
         - PYTHON: C:\\Python39-x64
     image: Visual Studio 2019
 install:

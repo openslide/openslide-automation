@@ -36,8 +36,7 @@ connect = 9989
 4. Download a source tarball of Buildbot.
 5. Use quilt to apply the patches from the
    [buildbot-patches](buildbot-patches) directory:
-
-    ```
+```
 cd buildbot-0.8.xx
 ln -s .../openslide-automation/buildbot-patches patches
 quilt push -a

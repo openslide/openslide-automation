@@ -135,32 +135,3 @@ The GitHub organization is configured with a webhook:
 
 Setup notes are
 [on the wiki](https://github.com/openslide/openslide/wiki/Buildbot).
-
-
-## AppVeyor configuration
-
-On most platforms supported by OpenSlide Python, users can easily install
-the correct compiler for building the Python extension module
-(`openslide._convert`).  On Windows, however, this is non-trivial, so
-OpenSlide Python releases are shipped with binary packages (wheels) for
-Windows.  To avoid the need for extensive configuration of a Windows build
-VM, including installation of several different versions of MSVC and Python,
-we do not build the Windows wheels via Buildbot.  Instead, we use a modified
-version of the
-[AppVeyor](http://www.appveyor.com/)
-configuration
-[documented](https://python-packaging-user-guide.readthedocs.org/en/latest/appveyor/)
-in the Python Packaging User Guide (PyPUG).  AppVeyor VMs have a
-[large set of software](http://www.appveyor.com/docs/installed-software)
-pre-installed, including every version of Python we want to support.
-
-We can configure AppVeyor in either of two ways: via the web interface, or
-by committing an `appveyor.yml` file to the OpenSlide Python repository.
-AppVeyor doesn't allow us to put configuration and code in separate
-repositories.  Therefore, we configure via the web interface, and use the
-"Export YAML" feature to maintain a copy of the configuration
-[under version control](appveyor).
-For the same reason, auxiliary scripts cannot be committed as separate
-files, as recommended by PyPUG; instead, our AppVeyor configuration must
-embed these scripts and write them to the build directory during the
-`install` phase.

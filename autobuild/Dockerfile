@@ -4,7 +4,9 @@ RUN dnf install -y gcc git-core meson pkg-config python3-requests \
     libtiff-devel openjpeg2-devel gdk-pixbuf2-modules gdk-pixbuf2-devel \
     libxml2-devel sqlite-devel cairo-devel glib2-devel libjpeg-turbo-utils \
     valgrind valgrind-devel dnf-plugins-core && \
-    dnf debuginfo-install -y cairo fontconfig glib2 && dnf clean all
+    dnf debuginfo-install --disablerepo=updates-modular -y \
+    cairo fontconfig glib2 && \
+    dnf clean all
 COPY test.sh /
 CMD ["/bin/bash", "/test.sh"]
 ENV PYTHONUNBUFFERED=1

@@ -57,7 +57,7 @@ def setup():
     # rebuild container
     subprocess.run(
         [
-            'podman', 'build', '--pull=always', '-t', CONTAINER,
+            'podman', 'build', '--pull', '-t', CONTAINER,
             Path(__file__).parent,
         ],
         check=True

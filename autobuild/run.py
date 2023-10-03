@@ -82,7 +82,10 @@ def setup():
             ['git', 'reset', '--hard', 'FETCH_HEAD'], cwd=SRCDIR, check=True
         )
         # remove cached Meson subprojects
-        subprocess.run(['git', 'clean', '-dxff'], cwd=SRCDIR, check=True)
+        subprocess.run(
+            ['podman', 'unshare', 'git', 'clean', '-dxff'],
+            cwd=SRCDIR, check=True
+        )
     else:
         subprocess.run(['git', 'clone', REPO, SRCDIR], check=True)
 

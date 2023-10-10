@@ -3,7 +3,7 @@ RUN dnf install -y gcc git-core meson pkg-config python3-requests \
     python3-pyyaml diffutils zlib-devel libpng-devel libjpeg-turbo-devel \
     libtiff-devel openjpeg2-devel gdk-pixbuf2-modules gdk-pixbuf2-devel \
     libxml2-devel sqlite-devel cairo-devel glib2-devel libjpeg-turbo-utils \
-    valgrind valgrind-devel dnf-plugins-core && \
+    valgrind valgrind-devel xdelta dnf-plugins-core && \
     dnf debuginfo-install --disablerepo=updates-modular -y \
     cairo fontconfig glib2 && \
     dnf clean all

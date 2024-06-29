@@ -54,12 +54,16 @@ def setup():
         if path.stat().st_mtime < threshold:
             path.unlink()
 
-    # rebuild container
+    # rebuild container and prune old layers
     subprocess.run(
         [
             'podman', 'build', '--pull', '-t', CONTAINER,
             Path(__file__).parent,
         ],
+        check=True
+    )
+    subprocess.run(
+        ['podman', 'image', 'prune', '-f'],
         check=True
     )
 

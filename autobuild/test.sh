@@ -27,7 +27,9 @@ OUT="/out"
 # build
 cd "$SRC"
 git rev-parse HEAD
-if ! meson setup "$BUILD" --werror; then
+# disable werror for libdicom 1.2.0
+# https://github.com/ImagingDataCommons/libdicom/pull/100
+if ! meson setup "$BUILD" --werror -Dlibdicom:werror=false; then
     cat "$BUILD/meson-logs/meson-log.txt"
     exit 1
 fi

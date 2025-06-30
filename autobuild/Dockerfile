@@ -1,6 +1,6 @@
 FROM registry.fedoraproject.org/fedora:latest
 RUN dnf install -y gcc git-core meson pkg-config \
-    python3-requests python3-pyyaml diffutils \
+    python3-requests python3-pyyaml \
     zlib-devel libzstd-devel libpng-devel libjpeg-turbo-devel libtiff-devel \
     openjpeg2-devel libdicom-devel libxml2-devel sqlite-devel cairo-devel \
     glib2-devel libjpeg-turbo-utils valgrind valgrind-devel xdelta \

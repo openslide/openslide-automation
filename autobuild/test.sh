@@ -27,7 +27,7 @@ OUT="/out"
 # build
 cd "$SRC"
 git rev-parse HEAD
-if ! meson setup "$BUILD" --werror -Dtest:enabled; then
+if ! meson setup "$BUILD" --werror -Dtest=enabled; then
     cat "$BUILD/meson-logs/meson-log.txt"
     exit 1
 fi

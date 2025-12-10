@@ -27,9 +27,7 @@ OUT="/out"
 # build
 cd "$SRC"
 git rev-parse HEAD
-# disable werror for libdicom 1.2.0
-# https://github.com/ImagingDataCommons/libdicom/pull/100
-if ! meson setup "$BUILD" --werror -Dlibdicom:werror=false; then
+if ! meson setup "$BUILD" --werror -Dtest:enabled; then
     cat "$BUILD/meson-logs/meson-log.txt"
     exit 1
 fi
@@ -37,7 +35,7 @@ cd "$BUILD"
 meson compile
 
 # smoke tests
-if ! meson test; then
+if ! meson test openslide: ; then
     cat meson-logs/testlog.txt
     exit 1
 fi
